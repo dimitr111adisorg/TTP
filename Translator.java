@@ -36,8 +36,8 @@ public class Translator {
     public static void translateToFrench() throws Exception {
 
 		final String ENDPOINT = "http://api.whatsmate.net/v1/translation/translate";
-		final String CLIENT_ID = "FREE_TRIAL_ACCOUNT";
-  		final String CLIENT_SECRET = "PUBLIC_SECRET";
+		final String CLIENT_ID = "t8210213@aueb.gr";
+  		final String CLIENT_SECRET = "c1cdce16ea404052a366e390ac25de17";
         boolean check = true;
         while (check == true) {
 
@@ -46,7 +46,7 @@ public class Translator {
             String text = in.nextLine();
             //boolean valid = true;
             //Validation a = new Validation();
-            //Validation.wordValidation(text,valid);
+            //Validation.validWord(text,valid);
             String fromLang = "en";
             String toLang = "fr";
             String jsonPayload = new StringBuilder()
@@ -77,11 +77,12 @@ public class Translator {
             os.close();
 
             int statusCode = conn.getResponseCode();
-            System.out.println("Status Code: " + statusCode);
+            //System.out.println("Status Code: " + statusCode);
+            System.out.print("The word in french is:");
             BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()));
             String output;
             while ((output = br.readLine()) != null) {
-            System.out.println(output);
+                System.out.println(output);
             }
             conn.disconnect();
             System.out.println("Would you like to keep translating to French?Press 1 for yes and 0 for no.");
@@ -93,17 +94,28 @@ public class Translator {
                     Translator.translateToFrench();
                 } else if (frenchAnswer == 0) {
                     check = false;
+                    Translator.translate();
                 } else {
-					System.out.println("Please insert a valid value");
+				    System.out.println("Please insert a valid value");
                 }
             }
+            /* *} else {
+                System.out.println("You enterded an invalid word. Please instert a valid word or press 0 to exit");
+                Scanner on = new Scanner(System.in);
+                int validAnswer = on.nextInt();
+                if (validAnswer != 0) {
+                    Translator.translateToFrench();
+                } else {
+                    Translator.translate();
+                }
+            }/* */
         }
     }//end translation to french
 
     public static void translateToItalian() throws Exception {
         final String ENDPOINT = "http://api.whatsmate.net/v1/translation/translate";
-		final String CLIENT_ID = "FREE_TRIAL_ACCOUNT";
-  		final String CLIENT_SECRET = "PUBLIC_SECRET";
+		final String CLIENT_ID = "t8210213@aueb.gr";
+  		final String CLIENT_SECRET = "c1cdce16ea404052a366e390ac25de17";
         boolean check = true;
         while (check == true) {
 
@@ -167,8 +179,8 @@ public class Translator {
     public static void translateToSpanish() throws Exception {
 
         final String ENDPOINT = "http://api.whatsmate.net/v1/translation/translate";
-		final String CLIENT_ID = "FREE_TRIAL_ACCOUNT";
-  		final String CLIENT_SECRET = "PUBLIC_SECRET";
+		final String CLIENT_ID = "t8210213@aueb.gr";
+  		final String CLIENT_SECRET = "c1cdce16ea404052a366e390ac25de17";
         boolean check = true;
         while (check == true) {
 
