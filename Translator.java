@@ -13,7 +13,7 @@ public class Translator {
 
         boolean check = true;
         while (check=true) {
-            System.out.println("Please press 1 for translation to French, 2 for translation toy Italian, 3 for translation to Spanish");
+            System.out.println("Please press 1 for translation to French, 2 for translation toy Italian, 3 for translation to Spanish. Press 0 to exit");
             Scanner a = new Scanner(System.in);
             int one = a.nextInt();
 
@@ -26,9 +26,12 @@ public class Translator {
             } else if (one == 3) {
                 //Translate to Spanish
                 Translator.translateToSpanish();
-            } else {
+            } else if (one == 0){
                 System.out.println("See you next time");
                 check = false;
+            } else {
+                System.out.println("Please enter a valid value");
+                Translator.translate();
             }
         }
     }
@@ -44,71 +47,76 @@ public class Translator {
             System.out.println("Please insert a word");
             Scanner in = new Scanner(System.in);
             String text = in.nextLine();
-            //boolean valid = true;
-            //Validation a = new Validation();
-            //Validation.validWord(text,valid);
-            String fromLang = "en";
-            String toLang = "fr";
-            String jsonPayload = new StringBuilder()
-            .append("{")
-            .append("\"fromLang\":\"")
-            .append(fromLang)
-            .append("\",")
-            .append("\"toLang\":\"")
-            .append(toLang)
-            .append("\",")
-            .append("\"text\":\"")
-            .append(text)
-            .append("\"")
-            .append("}")
-            .toString();
-
-            URL url = new URL(ENDPOINT);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("X-WM-CLIENT-ID", CLIENT_ID);
-            conn.setRequestProperty("X-WM-CLIENT-SECRET", CLIENT_SECRET);
-            conn.setRequestProperty("Content-Type", "application/json");
-
-            OutputStream os = conn.getOutputStream();
-            os.write(jsonPayload.getBytes());
-            os.flush();
-            os.close();
-
-            int statusCode = conn.getResponseCode();
-            //System.out.println("Status Code: " + statusCode);
-            System.out.print("The word in french is:");
-            BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()));
-            String output;
-            while ((output = br.readLine()) != null) {
-                System.out.println(output);
-            }
-            conn.disconnect();
-            System.out.println("Would you like to keep translating to French?Press 1 for yes and 0 for no.");
-
-            while (check == true) {
-                Scanner answerFrench = new Scanner(System.in);
-                int frenchAnswer = answerFrench.nextInt();
-                if (frenchAnswer == 1) {
-                    Translator.translateToFrench();
-                } else if (frenchAnswer == 0) {
-                    check = false;
+            Validation a = new Validation(); 
+            boolean isValid = Validation.validWord(text);
+            if (isValid == false) {
+                System.out.println("Invalid word. Press 1 to enter a valid one or press 0 to exit");
+                Scanner unvalidForFrench = new Scanner(System.in);
+                int validWordFrench = unvalidForFrench.nextInt(); 
+                if (validWordFrench == 0) {
                     Translator.translate();
-                } else {
-				    System.out.println("Please insert a valid value");
-                }
-            }
-            /* *} else {
-                System.out.println("You enterded an invalid word. Please instert a valid word or press 0 to exit");
-                Scanner on = new Scanner(System.in);
-                int validAnswer = on.nextInt();
-                if (validAnswer != 0) {
+                } else if (validWordFrench == 1) {
                     Translator.translateToFrench();
                 } else {
-                    Translator.translate();
+                    System.out.println("Please enter a valid value");
                 }
-            }/* */
+            } else {
+                String fromLang = "en";
+                String toLang = "fr";
+                String jsonPayload = new StringBuilder()
+                .append("{")
+                .append("\"fromLang\":\"")
+                .append(fromLang)
+                .append("\",")
+                .append("\"toLang\":\"")
+                .append(toLang)
+                .append("\",")
+                .append("\"text\":\"")
+                .append(text)
+                .append("\"")
+                .append("}")
+                .toString();
+
+                URL url = new URL(ENDPOINT);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setDoOutput(true);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("X-WM-CLIENT-ID", CLIENT_ID);
+                conn.setRequestProperty("X-WM-CLIENT-SECRET", CLIENT_SECRET);
+                conn.setRequestProperty("Content-Type", "application/json");
+
+                OutputStream os = conn.getOutputStream();
+                os.write(jsonPayload.getBytes());
+                os.flush();
+                os.close();
+
+                int statusCode = conn.getResponseCode();
+                //System.out.println("Status Code: " + statusCode);
+                System.out.print("The word in french is:");
+                BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()));
+                String output;
+                while ((output = br.readLine()) != null) {
+                    System.out.println(output);
+                }
+                conn.disconnect();
+                System.out.println("Would you like to keep translating to French?Press 1 for yes and 0 for no. Press 2 if yoy want to save the word!");
+
+                while (check == true) {
+                    Scanner answerFrench = new Scanner(System.in);
+                    int frenchAnswer = answerFrench.nextInt();
+                    if (frenchAnswer == 1) {
+                        Translator.translateToFrench();
+                    } else if (frenchAnswer == 0) {
+                        check = false;
+                        Translator.translate();
+                    //} else if (frenchAnswer == 2) {
+                        //καλει τη μέθοδο που 
+                        //Questionlist.frenchSavedWords(); 
+                    } else {
+				        System.out.println("Please insert a valid value");
+                    }
+                }
+            }
         }
     }//end translation to french
 
@@ -122,54 +130,71 @@ public class Translator {
             System.out.println("Please insert a word");
             Scanner in = new Scanner(System.in);
             String text = in.nextLine();
-            String fromLang = "en";
-            String toLang = "it";
-            String jsonPayload = new StringBuilder()
-            .append("{")
-            .append("\"fromLang\":\"")
-            .append(fromLang)
-            .append("\",")
-            .append("\"toLang\":\"")
-            .append(toLang)
-            .append("\",")
-            .append("\"text\":\"")
-            .append(text)
-            .append("\"")
-            .append("}")
-            .toString();
-
-            URL url = new URL(ENDPOINT);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("X-WM-CLIENT-ID", CLIENT_ID);
-            conn.setRequestProperty("X-WM-CLIENT-SECRET", CLIENT_SECRET);
-            conn.setRequestProperty("Content-Type", "application/json");
-
-            OutputStream os = conn.getOutputStream();
-            os.write(jsonPayload.getBytes());
-            os.flush();
-            os.close();
-
-            int statusCode = conn.getResponseCode();
-            System.out.println("Status Code: " + statusCode);
-            BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()));
-            String output;
-            while ((output = br.readLine()) != null) {
-            System.out.println(output);
-            }
-            conn.disconnect();
-            System.out.println("Would you like to keep translating to Italian?Press 1 for yes and 0 for no.");
-
-            while (check == true) {
-                Scanner answerItalian = new Scanner(System.in);
-                int italianAnswer = answerItalian.nextInt();
-                if (italianAnswer == 1) {
+            Validation b = new Validation();
+            boolean isValid = Validation.validWord(text);
+            if (isValid == false) {
+                System.out.println("Unvalid word. Press 1 to enter a valid one or 0 to exit");
+                Scanner unvalidForItalian = new Scanner(System.in);
+                int validWordItalian = unvalidForItalian.nextInt(); 
+                if (validWordItalian == 0) {
+                    Translator.translate();
+                } else if (validWordItalian == 1) {
                     Translator.translateToItalian();
-                } else if (italianAnswer == 0) {
-                    check = false;
                 } else {
-					System.out.println("Please insert a valid value");
+                    System.out.println("Please enter a valid value");
+                }
+            } else {
+                String fromLang = "en";
+                String toLang = "it";
+                String jsonPayload = new StringBuilder()
+                .append("{")
+                .append("\"fromLang\":\"")
+                .append(fromLang)
+                .append("\",")
+                .append("\"toLang\":\"")
+                .append(toLang)
+                .append("\",")
+                .append("\"text\":\"")
+                .append(text)
+                .append("\"")
+                .append("}")
+                .toString();
+                
+                URL url = new URL(ENDPOINT);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setDoOutput(true);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("X-WM-CLIENT-ID", CLIENT_ID);
+                conn.setRequestProperty("X-WM-CLIENT-SECRET", CLIENT_SECRET);
+                conn.setRequestProperty("Content-Type", "application/json");
+
+                OutputStream os = conn.getOutputStream();
+                os.write(jsonPayload.getBytes());
+                os.flush();
+                os.close();
+
+                int statusCode = conn.getResponseCode();
+                System.out.println("Status Code: " + statusCode);
+                BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()));
+                String output;
+                while ((output = br.readLine()) != null) {
+                    System.out.println(output);
+                }
+                conn.disconnect();
+                System.out.println("Would you like to keep translating to Italian?Press 1 for yes and 0 for no.Press 2 if you want to save the word!");
+
+                while (check == true) {
+                    Scanner answerItalian = new Scanner(System.in);
+                    int italianAnswer = answerItalian.nextInt();
+                    if (italianAnswer == 1) {
+                        Translator.translateToItalian();
+                    } else if (italianAnswer == 0) {
+                        check = false;
+                    //} else if (italianAnswer == 2) {
+                        //Questionlist.italianSavedWords();
+                    } else {
+					    System.out.println("Please insert a valid value");
+                    }
                 }
             }
         }
@@ -183,58 +208,75 @@ public class Translator {
   		final String CLIENT_SECRET = "c1cdce16ea404052a366e390ac25de17";
         boolean check = true;
         while (check == true) {
-
+            
             System.out.println("Please insert a word");
             Scanner in = new Scanner(System.in);
             String text = in.nextLine();
-            String fromLang = "en";
-            String toLang = "es";
-            String jsonPayload = new StringBuilder()
-            .append("{")
-            .append("\"fromLang\":\"")
-            .append(fromLang)
-            .append("\",")
-            .append("\"toLang\":\"")
-            .append(toLang)
-            .append("\",")
-            .append("\"text\":\"")
-            .append(text)
-            .append("\"")
-            .append("}")
-            .toString();
-
-            URL url = new URL(ENDPOINT);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("X-WM-CLIENT-ID", CLIENT_ID);
-            conn.setRequestProperty("X-WM-CLIENT-SECRET", CLIENT_SECRET);
-            conn.setRequestProperty("Content-Type", "application/json");
-
-            OutputStream os = conn.getOutputStream();
-            os.write(jsonPayload.getBytes());
-            os.flush();
-            os.close();
-
-            int statusCode = conn.getResponseCode();
-            System.out.println("Status Code: " + statusCode);
-            BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()));
-            String output;
-            while ((output = br.readLine()) != null) {
-            System.out.println(output);
-            }
-            conn.disconnect();
-            System.out.println("Would you like to keep translating to Spanish?Press 1 for yes and 0 for no.");
-
-            while (check == true) {
-                Scanner answerSpanish = new Scanner(System.in);
-                int spanishAnswer = answerSpanish.nextInt();
-                if (spanishAnswer == 1) {
-                    Translator.translateToSpanish();
-                } else if (spanishAnswer == 0) {
-                    check = false;
+            Validation c = new Validation();
+            boolean isValid = Validation.validWord(text);
+            if (isValid == false) {
+                System.out.println("Invalid word.Press 1 to enter a valid one or 0 to exit");
+                Scanner unvalidForSpanish = new Scanner(System.in);
+                int validWordSpanish = unvalidForSpanish.nextInt(); 
+                if (validWordSpanish == 0) {
+                    Translator.translate();
+                } else if (validWordSpanish == 1) {
+                    Translator.translateToFrench();
                 } else {
-					System.out.println("Please insert a valid value");
+                    System.out.println("Please enter a valid value");
+                }
+            } else {
+                String fromLang = "en";
+                String toLang = "es";
+                String jsonPayload = new StringBuilder()
+                .append("{")
+                .append("\"fromLang\":\"")
+                .append(fromLang)
+                .append("\",")
+                .append("\"toLang\":\"")
+                .append(toLang)
+                .append("\",")
+                .append("\"text\":\"")
+                .append(text)
+                .append("\"")
+                .append("}")
+                .toString();
+
+                URL url = new URL(ENDPOINT);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setDoOutput(true);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("X-WM-CLIENT-ID", CLIENT_ID);
+                conn.setRequestProperty("X-WM-CLIENT-SECRET", CLIENT_SECRET);
+                conn.setRequestProperty("Content-Type", "application/json");
+
+                OutputStream os = conn.getOutputStream();
+                os.write(jsonPayload.getBytes());
+                os.flush();
+                os.close();
+
+                int statusCode = conn.getResponseCode();
+                System.out.println("Status Code: " + statusCode);
+                BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()));
+                String output;
+                while ((output = br.readLine()) != null) {
+                    System.out.println(output);
+                }
+                conn.disconnect();
+                System.out.println("Would you like to keep translating to Spanish?Press 1 for yes and 0 for no. Press 2 to save the word!");
+
+                while (check == true) {
+                    Scanner answerSpanish = new Scanner(System.in);
+                    int spanishAnswer = answerSpanish.nextInt();
+                    if (spanishAnswer == 1) {
+                        Translator.translateToSpanish();
+                    } else if (spanishAnswer == 0) {
+                        check = false;
+                    //}else if(spanishAnswer == 2) {
+                        //Questionlist.spanishSavedWords();
+                    } else {
+	    				System.out.println("Please insert a valid value");
+                    }
                 }
             }
         }
