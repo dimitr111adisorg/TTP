@@ -4,10 +4,6 @@ public class Questions {
 
     public String [][] questions;
 
-    public Questions(String Q, String C, String A) {
-        
-    }
-
     public Questions() {
         questions = new String[10][5];
     }
