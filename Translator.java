@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 public class Translator {
 
@@ -47,12 +48,12 @@ public class Translator {
             System.out.println("Please insert a word");
             Scanner in = new Scanner(System.in);
             String text = in.nextLine();
-            Validation a = new Validation(); 
+            Validation a = new Validation();
             boolean isValid = Validation.validWord(text);
             if (isValid == false) {
                 System.out.println("Invalid word. Press 1 to enter a valid one or press 0 to exit");
                 Scanner unvalidForFrench = new Scanner(System.in);
-                int validWordFrench = unvalidForFrench.nextInt(); 
+                int validWordFrench = unvalidForFrench.nextInt();
                 if (validWordFrench == 0) {
                     Translator.translate();
                 } else if (validWordFrench == 1) {
@@ -93,10 +94,15 @@ public class Translator {
                 int statusCode = conn.getResponseCode();
                 //System.out.println("Status Code: " + statusCode);
                 System.out.print("The word in french is:");
-                BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()));
+                /*BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()));
                 String output;
                 while ((output = br.readLine()) != null) {
                     System.out.println(output);
+                }*/
+                BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream(), StandardCharsets.UTF_8));
+                String output;
+                while ((output = br.readLine()) != null) {
+                    System.out.println(output);//new String(output.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8));
                 }
                 conn.disconnect();
                 System.out.println("Would you like to keep translating to French?Press 1 for yes and 0 for no. Press 2 if yoy want to save the word!");
@@ -109,9 +115,9 @@ public class Translator {
                     } else if (frenchAnswer == 0) {
                         check = false;
                         Translator.translate();
-                    //} else if (frenchAnswer == 2) {
-                        //καλει τη μέθοδο που 
-                        //Questionlist.frenchSavedWords(); 
+                    } else if (frenchAnswer == 2) {
+                        TranslationHistory.addTranslation("French",text, frenchTranslation);
+                        check = false;
                     } else {
 				        System.out.println("Please insert a valid value");
                     }
@@ -135,7 +141,7 @@ public class Translator {
             if (isValid == false) {
                 System.out.println("Unvalid word. Press 1 to enter a valid one or 0 to exit");
                 Scanner unvalidForItalian = new Scanner(System.in);
-                int validWordItalian = unvalidForItalian.nextInt(); 
+                int validWordItalian = unvalidForItalian.nextInt();
                 if (validWordItalian == 0) {
                     Translator.translate();
                 } else if (validWordItalian == 1) {
@@ -159,7 +165,7 @@ public class Translator {
                 .append("\"")
                 .append("}")
                 .toString();
-                
+
                 URL url = new URL(ENDPOINT);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setDoOutput(true);
@@ -175,10 +181,15 @@ public class Translator {
 
                 int statusCode = conn.getResponseCode();
                 System.out.println("Status Code: " + statusCode);
-                BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()));
+                /*BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()));
                 String output;
                 while ((output = br.readLine()) != null) {
                     System.out.println(output);
+                }*/
+                BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream(), StandardCharsets.UTF_8));
+                String output;
+                while ((output = br.readLine()) != null) {
+                    System.out.println(new String(output.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8));
                 }
                 conn.disconnect();
                 System.out.println("Would you like to keep translating to Italian?Press 1 for yes and 0 for no.Press 2 if you want to save the word!");
@@ -190,8 +201,10 @@ public class Translator {
                         Translator.translateToItalian();
                     } else if (italianAnswer == 0) {
                         check = false;
-                    //} else if (italianAnswer == 2) {
-                        //Questionlist.italianSavedWords();
+                        Translator.translate();
+                    } else if (italianAnswer == 2) {
+                        TranslationHistory.addTranslation("Italian",text, italianTranslation);
+                        check = false;
                     } else {
 					    System.out.println("Please insert a valid value");
                     }
@@ -208,7 +221,7 @@ public class Translator {
   		final String CLIENT_SECRET = "c1cdce16ea404052a366e390ac25de17";
         boolean check = true;
         while (check == true) {
-            
+
             System.out.println("Please insert a word");
             Scanner in = new Scanner(System.in);
             String text = in.nextLine();
@@ -217,7 +230,7 @@ public class Translator {
             if (isValid == false) {
                 System.out.println("Invalid word.Press 1 to enter a valid one or 0 to exit");
                 Scanner unvalidForSpanish = new Scanner(System.in);
-                int validWordSpanish = unvalidForSpanish.nextInt(); 
+                int validWordSpanish = unvalidForSpanish.nextInt();
                 if (validWordSpanish == 0) {
                     Translator.translate();
                 } else if (validWordSpanish == 1) {
@@ -272,8 +285,10 @@ public class Translator {
                         Translator.translateToSpanish();
                     } else if (spanishAnswer == 0) {
                         check = false;
-                    //}else if(spanishAnswer == 2) {
-                        //Questionlist.spanishSavedWords();
+                        Translator.translate();
+                    }else if(spanishAnswer == 2) {
+                        TranslationHistory.addTranslation("Spanish",text, spanishTranslation);
+                        check = false;
                     } else {
 	    				System.out.println("Please insert a valid value");
                     }
