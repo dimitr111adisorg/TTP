@@ -116,7 +116,7 @@ public class Translator {
                         check = false;
                         Translator.translate();
                     } else if (frenchAnswer == 2) {
-                        TranslationHistory.addTranslation("French",text, frenchTranslation);
+                        TranslationHistory.addTranslation("French",text,output); // frenchTranslation);
                         check = false;
                     } else {
 				        System.out.println("Please insert a valid value");
@@ -180,12 +180,13 @@ public class Translator {
                 os.close();
 
                 int statusCode = conn.getResponseCode();
-                System.out.println("Status Code: " + statusCode);
+                //System.out.println("Status Code: " + statusCode);
                 /*BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()));
                 String output;
                 while ((output = br.readLine()) != null) {
                     System.out.println(output);
                 }*/
+                System.out.print("The word in italian is:");
                 BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream(), StandardCharsets.UTF_8));
                 String output;
                 while ((output = br.readLine()) != null) {
@@ -203,7 +204,7 @@ public class Translator {
                         check = false;
                         Translator.translate();
                     } else if (italianAnswer == 2) {
-                        TranslationHistory.addTranslation("Italian",text, italianTranslation);
+                        TranslationHistory.addTranslation("Italian",text, output); //italianTranslation);
                         check = false;
                     } else {
 					    System.out.println("Please insert a valid value");
@@ -269,7 +270,8 @@ public class Translator {
                 os.close();
 
                 int statusCode = conn.getResponseCode();
-                System.out.println("Status Code: " + statusCode);
+                //System.out.println("Status Code: " + statusCode);
+                System.out.print("The word in spanish is:");
                 BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()));
                 String output;
                 while ((output = br.readLine()) != null) {
@@ -287,7 +289,7 @@ public class Translator {
                         check = false;
                         Translator.translate();
                     }else if(spanishAnswer == 2) {
-                        TranslationHistory.addTranslation("Spanish",text, spanishTranslation);
+                        TranslationHistory.addTranslation("Spanish",text, output); //spanishTranslation);
                         check = false;
                     } else {
 	    				System.out.println("Please insert a valid value");
