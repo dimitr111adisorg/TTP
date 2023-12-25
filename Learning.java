@@ -149,10 +149,5 @@ public class Learning {
         }
         return flag;
     }
-
-    public static void main(String[] args) {
-        MultipleChoice();
-
-    }    
 }
 
