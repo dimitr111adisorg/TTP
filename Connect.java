@@ -11,7 +11,7 @@ public class Connect {
         Connection conn = null;  
         try {  
             // db parameters  
-            String url = "jdbc:sqlite:C:\\SQLite\\DataBase.db";  
+            String url = "jdbc:sqlite:.\\SQLite\\DataBase.db";  
             // create a connection to the database
             try {
                 Class.forName("org.sqlite.JDBC");
