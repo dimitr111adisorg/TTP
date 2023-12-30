@@ -88,6 +88,8 @@ public class Learning {
                 do {
                     if (answer.equals("yes") || answer.equals("no") || answer.equals("YES") || answer.equals("NO")) {
                         flag = false;
+                        User currentUser = new User();
+                        QuestionsList.saveQuestion(currentUser.getUsername(), q.getQuestion(),q.getAnswer1(),q.getAnswer2(),q.getAnswer3(),q.getCorrectAnswer(),language);
                     } else {
                         System.out.println("Your answer must be 'yes' or 'no'.");
                         answer = in.nextLine();
