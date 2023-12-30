@@ -25,6 +25,7 @@ public class Menu {
                     QuestionsList.showSavedQuestions("2");
                     QuestionsList.showSavedQuestions("3");
                 }
+                
             } else if (answer == 1) {
                 Translator b = new Translator();
                 Translator.translate();
