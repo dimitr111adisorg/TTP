@@ -6,19 +6,18 @@ import java.util.Scanner;
 
 public class LogInSignUpChangePassword {
     
-    public static String chooseWhatToDo() {
+    public static void chooseWhatToDo() {
         System.out.println("Press: \n1 to log in, \n2 to sign up, \n3 to change password");
         Scanner a = new Scanner(System.in);
         String answer = a.nextLine();
         boolean flag = true;
-        String username = null;
         do {
             if (answer.equals("1")) {
                 flag = false;
-                username = logIn();
+                logIn();
             } else if (answer.equals("2")) {
                 flag = false;
-                username = signUp();
+                signUp();
             } else if (answer.equals("3")) {
                 changePassword();
             } else {
@@ -26,11 +25,10 @@ public class LogInSignUpChangePassword {
                 answer = a.nextLine();
             }
         } while (flag);
-        a.close();    
-        return username;   
+        a.close();     
     }
 
-    private static String logIn() {
+    private static void logIn() {
         Scanner b = new Scanner(System.in);
         boolean flag = true;
         do {
@@ -48,7 +46,6 @@ public class LogInSignUpChangePassword {
                         flag = false;
                         User currentUser = new User(username, password);
                         System.out.println("Welcome back, "+currentUser.getUsername()+"!");
-                        return username;
                     } else {
                         System.out.println("Wrong username or password. Try again");
                     }
@@ -56,11 +53,10 @@ public class LogInSignUpChangePassword {
                 System.out.println(e.getMessage());
             }
         } while (flag);
-        b.close();
-        return null;    
+        b.close();   
     }
 
-    private static String signUp() {
+    private static void signUp() {
         Scanner c = new Scanner(System.in);
         System.out.println("Please enter a username:");
         String username = c.nextLine();
@@ -91,12 +87,10 @@ public class LogInSignUpChangePassword {
             pstmt.executeUpdate();
             User currentuUser = new User(username, password);
             System.out.println("Welcome, "+currentuUser.getUsername());
-            return username;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } 
         c.close();
-        return null;
     }
 
     private static void changePassword() {
