@@ -3,8 +3,7 @@ public class Menu {
     
    public static void main(String [] args ) throws Exception {
 
-        LogInSignUpChangePassword obj = new LogInSignUpChangePassword();
-        String username = obj.chooseWhatToDo();
+        LogInSignUpChangePassword.chooseWhatToDo();
 
         boolean check = true; 
         while (check == true) {
