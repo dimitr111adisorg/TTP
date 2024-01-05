@@ -4,31 +4,34 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class LogInSignUpChangePassword {
+import javax.swing.text.Style;
+
+public class LogInSignInChangePassword {
     
-    public static void chooseWhatToDo() {
-        System.out.println("Press: \n1 to log in, \n2 to sign up, \n3 to change password");
+    public static void chooseWhatToDo() throws Exception {
         Scanner a = new Scanner(System.in);
-        String answer = a.nextLine();
+        String username = null;
         boolean flag = true;
+        System.out.println("Press: \n1 to log in, \n2 to sign up, \n3 to change password");
+        String answer = a.nextLine();
         do {
             if (answer.equals("1")) {
                 flag = false;
-                logIn();
+                username = logIn();
             } else if (answer.equals("2")) {
                 flag = false;
-                signUp();
+                username = signUp();
             } else if (answer.equals("3")) {
                 changePassword();
             } else {
                 System.out.println("Please enter a valid answer (1,2 or 3)");
                 answer = a.nextLine();
             }
-        } while (flag);
-        a.close();     
+        } while (flag);  
+        Menu.menu(username);
     }
 
-    private static void logIn() {
+    private static String logIn() {
         Scanner b = new Scanner(System.in);
         boolean flag = true;
         do {
@@ -46,17 +49,18 @@ public class LogInSignUpChangePassword {
                         flag = false;
                         User currentUser = new User(username, password);
                         System.out.println("Welcome back, "+currentUser.getUsername()+"!");
+                        return currentUser.getUsername();
                     } else {
                         System.out.println("Wrong username or password. Try again");
                     }
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-        } while (flag);
-        b.close();   
+        } while (flag); 
+        return null;  
     }
 
-    private static void signUp() {
+    private static String signUp() {
         Scanner c = new Scanner(System.in);
         System.out.println("Please enter a username:");
         String username = c.nextLine();
@@ -85,13 +89,13 @@ public class LogInSignUpChangePassword {
             pstmt.setString(1, username);
             pstmt.setString(2, password);
             pstmt.executeUpdate();
-            User currentuUser = new User(username, password);
-            System.out.println("Welcome, "+currentuUser.getUsername());
+            User currentUser = new User(username, password);
+            System.out.println("Welcome, "+currentUser.getUsername());
+            return currentUser.getUsername();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } 
-        c.close();
-
+        return null;
     }
 
     private static void changePassword() {
@@ -123,7 +127,7 @@ public class LogInSignUpChangePassword {
         } while (flag);
         System.out.println("Type your new password");
         String newPassword = d.nextLine();
-        String sql2 = "UPDATE Users SET password=? WHERE username=?;";
+        String sql2 = "UPDATE users SET password=? Where username=?";
         try (Connection conn = Connect.connect();
             PreparedStatement pstmt  = conn.prepareStatement(sql2)) {
             pstmt.setString(1, username);
@@ -134,7 +138,5 @@ public class LogInSignUpChangePassword {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
-        d.close();
     }
 }
