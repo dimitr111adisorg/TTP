@@ -13,24 +13,31 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Learning {
-    public static void MultipleChoice () {
-        
+    public static void MultipleChoice (String username) throws Exception {
+
         Scanner in = new Scanner(System.in);
         
-        System.out.println("Select language:");
+        System.out.println("\nSelect language:");
         System.out.println("1. French \n2. Spanish \n3. Italian");
         System.out.println("Type 1,2 or 3");
+        System.out.println("Press 0 to go back to menu");
+
 
         boolean flag = true;
         String language = in.nextLine();
         do {
-                if (language.equals("1") || language.equals("2") || language.equals("3")) {
+                if (language.equals("0") || language.equals("1") || language.equals("2") || language.equals("3")) {
                     flag = false;
                 } else {
                     System.out.println("Please enter a valid answer (1, 2 or 3)");
                     language = in.nextLine();
                 }
          } while (flag);
+
+        if (language.equals("0")) {
+            System.out.println("Back to menu");
+            Menu.menu(username);
+        }
 
         List<Questions> Q = new ArrayList<Questions>();
         Q = getQuestions(language);
@@ -86,19 +93,18 @@ public class Learning {
                 String answer = in.nextLine();
                 flag = true;
                 do {
-                    if (answer.equals("yes") || answer.equals("no") || answer.equals("YES") || answer.equals("NO")) {
+                    if (answer.equals("yes") || answer.equals("YES")) {
                         flag = false;
-                        User currentUser = new User();
-                        QuestionsList.saveQuestion(currentUser.getUsername(), q.getQuestion(),q.getAnswer1(),q.getAnswer2(),q.getAnswer3(),q.getCorrectAnswer(),language);
+                        QuestionsList.saveQuestion(username, q.getQuestion(),q.getAnswer1(),q.getAnswer2(),q.getAnswer3(),q.getCorrectAnswer(),language);
+                    } else if (answer.equals("no") || answer.equals("NO")) {
+                        flag = false;
                     } else {
                         System.out.println("Your answer must be 'yes' or 'no'.");
                         answer = in.nextLine();
                     }
                 } while (flag);
             }
-        }
-        in.close();
-           
+        }  
     }
 
     public static List<Questions> getQuestions(String choice) {
@@ -117,6 +123,8 @@ public class Learning {
             while (rs.next()) {
                 QUESTIONS.add(new Questions(rs.getInt("question_id"), rs.getString("question_text"),rs.getString("answer1"), rs.getString("answer2"), rs.getString("answer3"), rs.getString("correct_answer")));
             }
+            conn.close();
+            pstmt.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -152,4 +160,3 @@ public class Learning {
         return flag;
     }
 }
-
