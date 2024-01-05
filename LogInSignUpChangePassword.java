@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class LogInSignInChangePassword {
+public class LogInSignUnChangePassword {
     
     public static void chooseWhatToDo() throws Exception {
         Scanner a = new Scanner(System.in);
