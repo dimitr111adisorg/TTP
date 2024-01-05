@@ -1,3 +1,6 @@
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,7 +29,9 @@ public class QuestionsList {
                     pstmt.setString(7, "italian");
                 }
                 pstmt.executeUpdate();
-                System.out.println("Question saved!");
+                System.out.println("Question saved!\n");
+                pstmt.close();
+                conn.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -34,8 +39,8 @@ public class QuestionsList {
     }
 
     public static void showSavedQuestions(String username) {
-        System.out.println("Select language:");
-        System.out.println("1. French \n2. Spanish \n3. Italian");
+        System.out.println("\nSelect language:");
+        System.out.println("1 French \n2 Spanish \n3 Italian");
         System.out.println("Type 1,2 or 3");
 
         boolean flag = true;
@@ -50,22 +55,43 @@ public class QuestionsList {
                 }
          } while (flag);
         List<Questions> selectedQuestions = getQuestionsList(username, language);
-        in.close();
         if (selectedQuestions.isEmpty()) {
             System.out.println("No questions saved for the selected language.");
         } else {
-            System.out.println("Saved Questions:");
-            for (Questions q : selectedQuestions) {
-                System.out.println(q.getQuestion());
-                System.out.print("a. ");
-                System.out.println(q.getAnswer1());
-                System.out.print("b. ");
-                System.out.println(q.getAnswer2());
-                System.out.print("c. ");
-                System.out.println(q.getAnswer3());
-                System.out.println("Correct answer: "+q.getCorrectAnswer());
-                System.out.println();
+            System.out.println("\nSaved Questions:");
+            int i = 0;
+            for (Questions q: selectedQuestions){
+            i++;
+            System.out.println("Question no"+(i)+":");
+            try {
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), true);
+                writer.println(q.getQuestion());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            System.out.print("a. ");
+            try {
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), true);
+                writer.println(q.getAnswer1());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.print("b. ");
+             try {
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), true);
+                writer.println(q.getAnswer2());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.print("c. ");
+             try {
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), true);
+                writer.println(q.getAnswer3());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println("Correct Answer: "+q.getCorrectAnswer()+"\n");
+        }
         }
     }
 
@@ -73,20 +99,25 @@ public class QuestionsList {
         List<Questions> selectedQuestions = new ArrayList<Questions>();
         String sql = "SELECT * FROM SavedQuestions where username = ? AND language = ?";
         ResultSet rs = null;
+        String lang;
+        if (language.equals("1")) {
+               lang = "french";
+        } else if (language.equals("2")) {
+            lang = "spanish";
+        } else {
+            lang = "italian";
+        }
         try (Connection conn = Connect.connect();
             PreparedStatement pstmt  = conn.prepareStatement(sql)) {
                 pstmt.setString(1, username);
-                if (language.equals("1")) {
-                    pstmt.setString(2, "french");
-                } else if (language.equals("2")) {
-                    pstmt.setString(2, "spanish");
-                } else if (language.equals("3")){
-                    pstmt.setString(2, "italian");
-                }
+                pstmt.setString(2, lang);
                 rs  = pstmt.executeQuery();
                 while (rs.next()){
-                    selectedQuestions.add(new Questions(rs.getString("question"),rs.getString("answer1"), rs.getString("answer2"), rs.getString("answer3"), rs.getString("correct_answer")));
+                    selectedQuestions.add(new Questions(rs.getString("question"),rs.getString("answer1"), rs.getString("answer2"), rs.getString("answer3"), rs.getString("correct_answer")));  
                 }
+                pstmt.close();
+                conn.close();
+                return selectedQuestions; 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
