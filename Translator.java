@@ -7,37 +7,39 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
+
 public class Translator {
 
 
-    public static void translate() throws Exception {
+    public static void translate(String username) throws Exception {
 
         boolean check = true;
         while (check=true) {
-            System.out.println("Please press 1 for translation to French, 2 for translation toy Italian, 3 for translation to Spanish. Press 0 to exit");
+            System.out.println("Press: \n1 for translation to French, \n2 for translation toy Italian, \n3 for translation to Spanish. \nPress 0 to go back to menu");
             Scanner a = new Scanner(System.in);
-            int one = a.nextInt();
+            String one = a.nextLine();
 
-            if (one == 1) {
+            if (one.equals("1")) {
                 //Translate to French
-                Translator.translateToFrench();
-            } else if (one == 2) {
+                Translator.translateToFrench(username);
+            } else if (one.equals("2")) {
                 //Translate to Italian
-                Translator.translateToItalian();
-            } else if (one == 3) {
+                Translator.translateToItalian(username);
+            } else if (one.equals("3")) {
                 //Translate to Spanish
-                Translator.translateToSpanish();
-            } else if (one == 0){
-                System.out.println("See you next time");
+                Translator.translateToSpanish(username);
+            } else if (one.equals("0")){
+                System.out.println("Back to menu");
                 check = false;
+                Menu.menu(username);
             } else {
                 System.out.println("Please enter a valid value");
-                Translator.translate();
+                Translator.translate(username);
             }
         }
     }
 
-    public static void translateToFrench() throws Exception {
+    public static void translateToFrench(String username) throws Exception {
 
 		final String ENDPOINT = "http://api.whatsmate.net/v1/translation/translate";
 		final String CLIENT_ID = "t8210213@aueb.gr";
@@ -53,11 +55,11 @@ public class Translator {
             if (isValid == false) {
                 System.out.println("Invalid word. Press 1 to enter a valid one or press 0 to exit");
                 Scanner unvalidForFrench = new Scanner(System.in);
-                int validWordFrench = unvalidForFrench.nextInt();
-                if (validWordFrench == 0) {
-                    Translator.translate();
-                } else if (validWordFrench == 1) {
-                    Translator.translateToFrench();
+                String validWordFrench = unvalidForFrench.nextLine();
+                if (validWordFrench.equals("0")) {
+                    Translator.translate(username);
+                } else if (validWordFrench.equals("1")) {
+                    Translator.translateToFrench(username);
                 } else {
                     System.out.println("Please enter a valid value");
                 }
@@ -92,41 +94,50 @@ public class Translator {
                 os.close();
 
                 int statusCode = conn.getResponseCode();
-                //System.out.println("Status Code: " + statusCode);
                 System.out.print("The word in french is:");
-                /*BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()));
-                String output;
-                while ((output = br.readLine()) != null) {
-                    System.out.println(output);
-                }*/
+        
                 BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream(), StandardCharsets.UTF_8));
                 String output;
+                String translation = null;
                 while ((output = br.readLine()) != null) {
-                    System.out.println(output);//new String(output.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8));
+                    System.out.println(output);
+                    translation = output;
                 }
-                conn.disconnect();
-                System.out.println("Would you like to keep translating to French?Press 1 for yes and 0 for no. Press 2 if yoy want to save the word!");
 
-                while (check == true) {
-                    Scanner answerFrench = new Scanner(System.in);
-                    int frenchAnswer = answerFrench.nextInt();
-                    if (frenchAnswer == 1) {
-                        Translator.translateToFrench();
-                    } else if (frenchAnswer == 0) {
-                        check = false;
-                        Translator.translate();
-                    } else if (frenchAnswer == 2) {
-                        TranslationHistory.addTranslation("French",text,output); // frenchTranslation);
-                        check = false;
+                conn.disconnect();
+                System.out.println("Do you want to save this word?\nType yes or no");
+                boolean flag = true;
+                Scanner answerFrench = new Scanner(System.in);
+                String answer = answerFrench.nextLine();
+                do {
+                    if (answer.equals("yes") || answer.equals("YES")) {
+                        flag = false;
+                        SavedWords.saveFrenchToBD(username, text, translation);
+                    } else if (answer.equals("no") || answer.equals("NO")) {
+                        flag = false;
                     } else {
-				        System.out.println("Please insert a valid value");
+                        System.out.println("Your answer must be 'yes' or 'no'.");
+                        answer = in.nextLine();
+                    }
+                } while (flag);
+                System.out.println("Would you like to keep translating to French?\nPress 1 for yes and 0 to go back to menu");
+                while (check == true) {
+                    String frenchAnswer = answerFrench.nextLine();
+                    if (frenchAnswer.equals("1")) {
+                        Translator.translateToFrench(username);
+                    } else if (frenchAnswer.equals("0")) {
+                        check = false;
+                        Menu.menu(username);
+                        Translator.translate(username);
+                    } else {
+				        System.out.println("Please insert a valid value (0 or 1)");
                     }
                 }
             }
         }
     }//end translation to french
 
-    public static void translateToItalian() throws Exception {
+    public static void translateToItalian(String username) throws Exception {
         final String ENDPOINT = "http://api.whatsmate.net/v1/translation/translate";
 		final String CLIENT_ID = "t8210213@aueb.gr";
   		final String CLIENT_SECRET = "c1cdce16ea404052a366e390ac25de17";
@@ -143,9 +154,9 @@ public class Translator {
                 Scanner unvalidForItalian = new Scanner(System.in);
                 int validWordItalian = unvalidForItalian.nextInt();
                 if (validWordItalian == 0) {
-                    Translator.translate();
+                    Translator.translate(username);
                 } else if (validWordItalian == 1) {
-                    Translator.translateToItalian();
+                    Translator.translateToItalian(username);
                 } else {
                     System.out.println("Please enter a valid value");
                 }
@@ -189,25 +200,39 @@ public class Translator {
                 System.out.print("The word in italian is:");
                 BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream(), StandardCharsets.UTF_8));
                 String output;
+                String translation = null;
                 while ((output = br.readLine()) != null) {
                     System.out.println(new String(output.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8));
+                    translation = output;
                 }
                 conn.disconnect();
-                System.out.println("Would you like to keep translating to Italian?Press 1 for yes and 0 for no.Press 2 if you want to save the word!");
 
-                while (check == true) {
-                    Scanner answerItalian = new Scanner(System.in);
-                    int italianAnswer = answerItalian.nextInt();
-                    if (italianAnswer == 1) {
-                        Translator.translateToItalian();
-                    } else if (italianAnswer == 0) {
-                        check = false;
-                        Translator.translate();
-                    } else if (italianAnswer == 2) {
-                        TranslationHistory.addTranslation("Italian",text, output); //italianTranslation);
-                        check = false;
+                System.out.println("Do you want to save this word?\nType yes or no");
+                boolean flag = true;
+                Scanner answerItalian = new Scanner(System.in);
+                String answer = answerItalian.nextLine();
+                do {
+                    if (answer.equals("yes") || answer.equals("YES")) {
+                        flag = false;
+                         SavedWords.saveItalianToBD(username, text, translation);
+                    } else if (answer.equals("no") || answer.equals("NO")) {
+                        flag = false;
                     } else {
-					    System.out.println("Please insert a valid value");
+                        System.out.println("Your answer must be 'yes' or 'no'.");
+                        answer = in.nextLine();
+                    }
+                } while (flag);
+                System.out.println("Would you like to keep translating to Italian?\nPress 1 for yes and 0 to go back to menu");
+                while (check == true) {
+                    String frenchAnswer = answerItalian.nextLine();
+                    if (frenchAnswer.equals("1")) {
+                        Translator.translateToFrench(username);
+                    } else if (frenchAnswer.equals("0")) {
+                        check = false;
+                        Menu.menu(username);
+                        Translator.translate(username);
+                    } else {
+				        System.out.println("Please insert a valid value (0 or 1)");
                     }
                 }
             }
@@ -215,7 +240,7 @@ public class Translator {
 
     }//end translation to italian
 
-    public static void translateToSpanish() throws Exception {
+    public static void translateToSpanish(String username) throws Exception {
 
         final String ENDPOINT = "http://api.whatsmate.net/v1/translation/translate";
 		final String CLIENT_ID = "t8210213@aueb.gr";
@@ -231,11 +256,11 @@ public class Translator {
             if (isValid == false) {
                 System.out.println("Invalid word.Press 1 to enter a valid one or 0 to exit");
                 Scanner unvalidForSpanish = new Scanner(System.in);
-                int validWordSpanish = unvalidForSpanish.nextInt();
-                if (validWordSpanish == 0) {
-                    Translator.translate();
-                } else if (validWordSpanish == 1) {
-                    Translator.translateToFrench();
+                String validWordSpanish = unvalidForSpanish.nextLine();
+                if (validWordSpanish.equals("0")) {
+                    Translator.translate(username);
+                } else if (validWordSpanish.equals("1")) {
+                    Translator.translateToSpanish(username);
                 } else {
                     System.out.println("Please enter a valid value");
                 }
@@ -274,25 +299,38 @@ public class Translator {
                 System.out.print("The word in spanish is:");
                 BufferedReader br = new BufferedReader(new InputStreamReader((statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()));
                 String output;
+                String translation = null;
                 while ((output = br.readLine()) != null) {
                     System.out.println(output);
+                    translation = output;
                 }
                 conn.disconnect();
-                System.out.println("Would you like to keep translating to Spanish?Press 1 for yes and 0 for no. Press 2 to save the word!");
-
-                while (check == true) {
-                    Scanner answerSpanish = new Scanner(System.in);
-                    int spanishAnswer = answerSpanish.nextInt();
-                    if (spanishAnswer == 1) {
-                        Translator.translateToSpanish();
-                    } else if (spanishAnswer == 0) {
-                        check = false;
-                        Translator.translate();
-                    }else if(spanishAnswer == 2) {
-                        TranslationHistory.addTranslation("Spanish",text, output); //spanishTranslation);
-                        check = false;
+                System.out.println("Do you want to save this word?\nType yes or no");
+                boolean flag = true;
+                Scanner answerSpanish = new Scanner(System.in);
+                String answer = answerSpanish.nextLine();
+                do {
+                    if (answer.equals("yes") || answer.equals("YES")) {
+                        flag = false;
+                         SavedWords.saveSpanishToBD(username, text, translation);
+                    } else if (answer.equals("no") || answer.equals("NO")) {
+                        flag = false;
                     } else {
-	    				System.out.println("Please insert a valid value");
+                        System.out.println("Your answer must be 'yes' or 'no'.");
+                        answer = in.nextLine();
+                    }
+                } while (flag);
+                System.out.println("Would you like to keep translating to Spanish?\nPress 1 for yes and 0 to go back to menu");
+                while (check == true) {
+                    String frenchAnswer = answerSpanish.nextLine();
+                    if (frenchAnswer.equals("1")) {
+                        Translator.translateToFrench(username);
+                    } else if (frenchAnswer.equals("0")) {
+                        check = false;
+                        Menu.menu(username);
+                        Translator.translate(username);
+                    } else {
+			System.out.println("Please insert a valid value (0 or 1)");
                     }
                 }
             }
