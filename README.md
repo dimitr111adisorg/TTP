@@ -1,5 +1,5 @@
-Oδηγιες μεταφρασης
-To compile the program from the command line, run the following command:
+#Oδηγιες μεταφρασης
+##To compile the program from the command line, run the following command:
 javac -cp "./lib/*;." Main.java
 Οδηγίες Εκτέλεσης
 To run the program from the command line, run the following command:
